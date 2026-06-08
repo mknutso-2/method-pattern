@@ -1,0 +1,43 @@
+# Project-wide clang-format configuration.
+#
+# Apply with: clang-format -i <files>
+BasedOnStyle: LLVM
+IndentWidth: 3
+TabWidth: 3
+UseTab: Never
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+IndentCaseLabels: true
+NamespaceIndentation: All
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+DerivePointerAlignment: false
+PointerAlignment: Middle
+ReferenceAlignment: Middle
+SpaceAfterCStyleCast: true
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeIsMainRegex: "$^"
+IncludeCategories:
+  # Standard library headers first. This intentionally matches simple angle
+  # includes like <vector> and leaves slash-qualified includes for external groups.
+  - Regex: "^<[^/]+>$"
+    Priority: 1
+  # External libraries, grouped by project.
+  - Regex: "^<catch2/"
+    Priority: 10
+  - Regex: "^<nlohmann/"
+    Priority: 11
+  # Current project headers last.
+  - Regex: '^".*"$'
+    Priority: 100
+  - Regex: ".*"
+    Priority: 200
+AlwaysBreakTemplateDeclarations: Yes
+AlignAfterOpenBracket: DontAlign
+ContinuationIndentWidth: 3
+ConstructorInitializerIndentWidth: 3
+BinPackParameters: false
+BreakConstructorInitializers: BeforeColon
+PackConstructorInitializers: CurrentLine

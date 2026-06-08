@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cmake-format:
+    name: cmake-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y python3-venv
+      - run: python3 -m venv .ci-tools
+      - run: .ci-tools/bin/python -m pip install cmakelang==0.6.13
+      - run: CMAKE_FORMAT="$PWD/.ci-tools/bin/cmake-format" bash scripts/ci-cmake-format.sh
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang-format clang-tidy
+      - run: bash scripts/ci-lint.sh
+
+  public-headers:
+    name: public-headers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y g++
+      - run: bash scripts/ci-public-headers.sh
+
+  build-gcc:
+    name: build (gcc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y g++ ninja-build
+      - run: bash scripts/ci-build-gcc.sh
+
+  build-gcc-release:
+    name: build (gcc release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y g++ ninja-build
+      - run: bash scripts/ci-build-gcc-release.sh
+
+  build-clang:
+    name: build (clang)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang g++ ninja-build
+      - run: bash scripts/ci-build-clang.sh
+
+  build-clang-release:
+    name: build (clang release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang g++ ninja-build
+      - run: bash scripts/ci-build-clang-release.sh
+
+  unit-tests-gcc:
+    name: unit-tests (gcc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y g++ ninja-build
+      - run: bash scripts/ci-unit-tests-gcc.sh
+
+  unit-tests-gcc-release:
+    name: unit-tests (gcc release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y g++ ninja-build
+      - run: bash scripts/ci-unit-tests-gcc-release.sh
+
+  unit-tests-clang:
+    name: unit-tests (clang)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang g++ ninja-build
+      - run: bash scripts/ci-unit-tests-clang.sh
+
+  unit-tests-clang-release:
+    name: unit-tests (clang release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang g++ ninja-build
+      - run: bash scripts/ci-unit-tests-clang-release.sh
+
+  sanitizers:
+    name: sanitizers (clang)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y clang g++ ninja-build
+      - run: bash scripts/ci-sanitizers-clang.sh
+
+  build-msvc:
+    name: build (msvc)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash scripts/ci-build-msvc.sh
+
+  build-msvc-release:
+    name: build (msvc release)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash scripts/ci-build-msvc-release.sh
+
+  unit-tests-msvc:
+    name: unit-tests (msvc)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash scripts/ci-unit-tests-msvc.sh
+
+  unit-tests-msvc-release:
+    name: unit-tests (msvc release)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash scripts/ci-unit-tests-msvc-release.sh

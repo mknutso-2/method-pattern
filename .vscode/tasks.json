@@ -1,0 +1,238 @@
+{
+  "version": "2.0.0",
+  // Tasks are actions performed by invoking shell commands from the Command Palette (Ctrl/Cmd+Shift+P)
+  // and can be mapped to custom keybindings.
+  "tasks": [
+    {
+      "label": "Run: ci-build.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build.sh"],
+      "detail": "Builds the default CMake preset.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run: ci-unit-tests.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests.sh"],
+      "detail": "Tests the default CMake preset.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-lint.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-lint.sh"],
+      "detail": "Maps to GitHub Actions job: lint.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-cmake-format.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-cmake-format.sh"],
+      "detail": "Maps to GitHub Actions job: cmake-format.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-public-headers.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-public-headers.sh"],
+      "detail": "Maps to GitHub Actions job: public-headers.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-gcc.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-gcc.sh"],
+      "detail": "Maps to GitHub Actions job: build (gcc).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-gcc-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-gcc-release.sh"],
+      "detail": "Maps to GitHub Actions job: build (gcc release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-clang.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-clang.sh"],
+      "detail": "Maps to GitHub Actions job: build (clang).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-clang-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-clang-release.sh"],
+      "detail": "Maps to GitHub Actions job: build (clang release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-msvc.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-msvc.sh"],
+      "detail": "Maps to GitHub Actions job: build (msvc).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-build-msvc-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-build-msvc-release.sh"],
+      "detail": "Maps to GitHub Actions job: build (msvc release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "build"
+    },
+    {
+      "label": "Run: ci-unit-tests-gcc.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-gcc.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (gcc).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-unit-tests-gcc-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-gcc-release.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (gcc release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-unit-tests-clang.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-clang.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (clang).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-unit-tests-clang-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-clang-release.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (clang release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-unit-tests-msvc.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-msvc.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (msvc).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-unit-tests-msvc-release.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-unit-tests-msvc-release.sh"],
+      "detail": "Maps to GitHub Actions job: unit-tests (msvc release).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-sanitizers-clang.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-sanitizers-clang.sh"],
+      "detail": "Maps to GitHub Actions job: sanitizers (clang).",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Run: ci-all.sh",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/ci-all.sh"],
+      "detail": "Runs required checks for this platform and opportunistic checks when supporting toolchains are present.",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true
+      },
+      "group": "test"
+    }
+  ]
+}

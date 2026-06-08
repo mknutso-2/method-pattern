@@ -1,0 +1,6 @@
+build/
+build-*/
+out/
+.cache/
+.ci-tools/
+CMakeUserPresets.json

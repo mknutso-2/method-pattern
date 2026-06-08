@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug MealPlanner (MSVC Debug)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/msvc-debug/Debug/MealPlanner.exe",
+      "args": ["--version"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Run: ci-build-msvc.sh"
+    },
+    {
+      "name": "Debug MealPlannerTests (MSVC Debug)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/msvc-debug/Debug/MealPlannerTests.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Run: ci-build-msvc.sh"
+    }
+  ]
+}
