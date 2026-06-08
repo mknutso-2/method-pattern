@@ -153,10 +153,14 @@ enable_project_warnings(MethodCore)
 enable_project_sanitizers(MethodCore)
 
 add_public_header_self_check(
-   PublicHeaderSelfCheck Method::Method "${CMAKE_CURRENT_SOURCE_DIR}/include"
+   MethodPublicHeaderSelfCheck Method::Method "${CMAKE_CURRENT_SOURCE_DIR}/include"
    "${CMAKE_CURRENT_SOURCE_DIR}/include/Method/*.h"
 )
-add_system_includes_from_target(PublicHeaderSelfCheck nlohmann_json::nlohmann_json)
+add_system_includes_from_target(MethodPublicHeaderSelfCheck nlohmann_json::nlohmann_json)
+
+if(PROJECT_IS_TOP_LEVEL)
+   add_custom_target(PublicHeaderSelfCheck DEPENDS MethodPublicHeaderSelfCheck)
+endif()
 
 if(METHOD_ENABLE_INSTALL)
    if(METHOD_USING_FETCHED_NLOHMANN_JSON)
