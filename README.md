@@ -7,7 +7,29 @@
 This repo contains a small C++23 Method Pattern library. It is similar to the Command pattern, but uses "Method" because
 the model supports both read-oriented queries and action-oriented commands.
 
+The main idea is to document and implement a complete interaction surface for a library or application as a list of
+Methods. In this README, that list is called a **Method Surface**. "Control Surface" is also a reasonable phrase, but
+"Method Surface" is more precise here because the surface includes queries as well as commands, and because the term
+maps directly to a collection of `Method::Declaration` and `Method::Definition` objects.
+
 The public CMake target is `Method::Method`, and public headers live under `include/Method/`.
+
+## Method Surface
+
+A Method Surface is the complete set of operations a library or application chooses to expose. Each operation is
+described by a `Method::Declaration` and implemented by a `Method::Definition`.
+
+For a library, the Method Surface can define the externally visible automation contract for querying or changing the
+library's state. A consuming application, plugin host, service process, or future automation protocol can enumerate the
+surface and decide which methods to expose.
+
+For an application, the Method Surface usually sits directly on top of the model layer in a Model-View architecture. The
+view layer invokes Methods instead of reaching into the model through scattered one-off calls. If all meaningful
+model-view interactions go through Methods, the application has a concise, inspectable definition of its interaction
+surface.
+
+This library intentionally does not define an automation protocol. It defines the in-process model that a protocol could
+use: declarations, definitions, invocations, schemas, operation kind, versioning, descriptions, and undo behavior.
 
 ## Core Types
 
@@ -19,6 +41,56 @@ The public CMake target is `Method::Method`, and public headers live under `incl
 - `Method::Kind` distinguishes `Query`, `UndoableCommand`, and `NonUndoableCommand`.
 - `Method::Version` stores major and minor versions.
 - `Method::Json` aliases `nlohmann::json` for schema values.
+
+## Why Use It
+
+Representing an interaction surface as Methods has several practical benefits:
+
+- Discoverability: applications can enumerate available Methods for AI interaction, generated documentation, command
+  palettes, user-mappable shortcuts, plugin hosts, or external automation tools.
+- Auditing and telemetry: applications can consistently log, record, measure, and replay all operations performed during
+  a session when model interaction flows through Method invocations.
+- Portability across views: the same Method Surface can back a desktop UI, CLI, web UI, test harness, scripting bridge,
+  or remote automation layer without redefining the model-facing API each time.
+- Automation readiness: once an application has a complete Method Surface with schemas, descriptions, and operation
+  kinds, exposing that surface through an automation protocol becomes a direct adapter problem.
+- Undo structure: `Method::Kind::UndoableCommand` gives the API an explicit, opinionated place to introduce undo
+  behavior where it is useful.
+- Validation and tooling: input and output schemas give callers, adapters, tests, and documentation generators a common
+  description of expected payloads.
+- Permission boundaries: declarations provide a natural place for future policy metadata, allowing hosts to decide which
+  Methods are visible or callable in a given context.
+- Testing: Methods make integration tests and model-level workflow tests easier to express because tests can invoke the
+  same surface used by the UI or automation layer.
+- Versioning: declarations include a version so callers can reason about compatibility and evolution at the operation
+  level, not only at the library or application level.
+
+## Typical Application Shape
+
+In an application, Method often fits as a thin layer above the model:
+
+```text
+View / UI / CLI / Automation Adapter
+   -> Method::Definition lookup
+   -> Method::Invocation
+   -> Model layer
+```
+
+The view chooses a Method, supplies input, creates an invocation, and executes it. The model still owns the domain logic;
+Method provides a consistent way to name, describe, invoke, audit, and optionally undo that logic.
+
+## Typical Library Shape
+
+A library can expose a function that returns its Method declarations or definitions:
+
+```cpp
+std::vector<Method::Declaration> ListWidgetMethods();
+std::vector<Method::Definition> CreateWidgetMethods(WidgetModel & model);
+```
+
+That list can then be consumed by application code, documentation generators, AI tooling, or an automation adapter. The
+transport is deliberately outside this library; Method is the shared vocabulary for describing and invoking the
+operations.
 
 ## Project Layout
 
