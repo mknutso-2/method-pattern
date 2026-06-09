@@ -44,10 +44,6 @@ static Method::Json InvokeRequests(TodoListMethods::TodoListSurface & surface, c
    return InvokeRequest(surface, request);
 }
 
-// argv is the process-entry boundary; keep Clang's unsafe-buffer allowance scoped to main.
-#if defined(__clang__)
-[[clang::unsafe_buffer_usage]]
-#endif
 int main(int argc, char ** argv)
 {
    try

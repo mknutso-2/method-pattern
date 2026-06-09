@@ -38,10 +38,6 @@ static void RunDemo(TodoListMethods::TodoListSurface & surface)
    PrintJson(surface.Invoke("todo.list", Method::Json::object()));
 }
 
-// argv is the process-entry boundary; keep Clang's unsafe-buffer allowance scoped to main.
-#if defined(__clang__)
-[[clang::unsafe_buffer_usage]]
-#endif
 int main(int argc, char ** argv)
 {
    try

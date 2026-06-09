@@ -44,8 +44,15 @@ function(enable_project_warnings target_name)
       )
    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       target_compile_options(
-         ${target_name} PRIVATE -Weverything -Werror -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded
-                                -Wno-pre-c++23-compat
+         ${target_name}
+         PRIVATE -Weverything
+                 -Werror
+                 -Wno-c++98-compat
+                 -Wno-c++98-compat-pedantic
+                 -Wno-padded
+                 -Wno-pre-c++23-compat
+                 # Clang's experimental safe-buffer diagnostic is too noisy for normal process-entry argv handling.
+                 -Wno-unsafe-buffer-usage
       )
    else()
       target_compile_options(

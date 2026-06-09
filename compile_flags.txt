@@ -6,6 +6,7 @@
 -Wno-c++98-compat-pedantic
 -Wno-padded
 -Wno-pre-c++23-compat
+-Wno-unsafe-buffer-usage
 -Iinclude
 -Iexamples/Counter
 -Iexamples/TodoList/core/include
