@@ -41,8 +41,8 @@ else
    cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTING=ON
 fi
 
-mapfile -t SOURCES < <(find include src tests -type f \( -name '*.h' -o -name '*.cpp' \) | sort)
-mapfile -t TIDY_SOURCES < <(find src -type f -name '*.cpp' | sort)
+mapfile -t SOURCES < <(find examples include src tests -type f \( -name '*.h' -o -name '*.cpp' \) | sort)
+mapfile -t TIDY_SOURCES < <(find examples src -type f -name '*.cpp' | sort)
 
 echo "==> clang-format"
 "$CLANG_FORMAT" --dry-run --Werror "${SOURCES[@]}"
@@ -52,5 +52,6 @@ if [[ "$CLANG_TIDY_USE_COMPILE_COMMANDS" == "true" && -f "$BUILD_DIR/compile_com
    RunClangTidy -p "$BUILD_DIR" "${TIDY_SOURCES[@]}"
 else
    NLOHMANN_INCLUDE="$BUILD_DIR/_deps/nlohmann_json-src/include"
-   RunClangTidy "${TIDY_SOURCES[@]}" -- -std=c++23 -Wno-everything -Iinclude -isystem "$NLOHMANN_INCLUDE"
+   RunClangTidy "${TIDY_SOURCES[@]}" -- -std=c++23 -Wno-everything -Iinclude -Iexamples/TodoList/core/include \
+      -Iexamples/TodoList/methods/include -isystem "$NLOHMANN_INCLUDE"
 fi

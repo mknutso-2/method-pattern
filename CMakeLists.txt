@@ -14,6 +14,12 @@ include(FetchContent)
 option(METHOD_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer." OFF)
 option(METHOD_ENABLE_INSTALL "Install and export the Method CMake package." OFF)
 
+set(METHOD_BUILD_EXAMPLES_DEFAULT OFF)
+if(PROJECT_IS_TOP_LEVEL)
+   set(METHOD_BUILD_EXAMPLES_DEFAULT ON)
+endif()
+option(METHOD_BUILD_EXAMPLES "Build Method example projects." "${METHOD_BUILD_EXAMPLES_DEFAULT}")
+
 set(METHOD_BUILD_TESTING_DEFAULT OFF)
 if(PROJECT_IS_TOP_LEVEL)
    set(METHOD_BUILD_TESTING_DEFAULT ON)
@@ -162,6 +168,54 @@ if(PROJECT_IS_TOP_LEVEL)
    add_custom_target(PublicHeaderSelfCheck DEPENDS MethodPublicHeaderSelfCheck)
 endif()
 
+if(METHOD_BUILD_EXAMPLES)
+   add_library(CounterExampleLibrary STATIC examples/Counter/CounterMethods.cpp examples/Counter/CounterModel.cpp)
+   target_include_directories(CounterExampleLibrary PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/examples/Counter")
+   target_compile_features(CounterExampleLibrary PUBLIC cxx_std_23)
+   target_link_libraries(CounterExampleLibrary PUBLIC Method::Method)
+   add_system_includes_from_target(CounterExampleLibrary nlohmann_json::nlohmann_json)
+   enable_project_warnings(CounterExampleLibrary)
+   enable_project_sanitizers(CounterExampleLibrary)
+
+   add_executable(CounterExample examples/Counter/main.cpp)
+   target_link_libraries(CounterExample PRIVATE CounterExampleLibrary)
+   add_system_includes_from_target(CounterExample nlohmann_json::nlohmann_json)
+   enable_project_warnings(CounterExample)
+   enable_project_sanitizers(CounterExample)
+
+   add_library(TodoListCoreExample STATIC examples/TodoList/core/src/TodoListModel.cpp)
+   target_include_directories(TodoListCoreExample PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/examples/TodoList/core/include")
+   target_compile_features(TodoListCoreExample PUBLIC cxx_std_23)
+   enable_project_warnings(TodoListCoreExample)
+   enable_project_sanitizers(TodoListCoreExample)
+
+   add_library(TodoListMethodsExample STATIC examples/TodoList/methods/src/TodoListSurface.cpp)
+   target_include_directories(
+      TodoListMethodsExample PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/examples/TodoList/methods/include"
+   )
+   target_compile_features(TodoListMethodsExample PUBLIC cxx_std_23)
+   target_link_libraries(
+      TodoListMethodsExample
+      PUBLIC Method::Method
+      PRIVATE TodoListCoreExample
+   )
+   add_system_includes_from_target(TodoListMethodsExample nlohmann_json::nlohmann_json)
+   enable_project_warnings(TodoListMethodsExample)
+   enable_project_sanitizers(TodoListMethodsExample)
+
+   add_executable(TodoListCliExample examples/TodoList/cli/main.cpp)
+   target_link_libraries(TodoListCliExample PRIVATE TodoListMethodsExample)
+   add_system_includes_from_target(TodoListCliExample nlohmann_json::nlohmann_json)
+   enable_project_warnings(TodoListCliExample)
+   enable_project_sanitizers(TodoListCliExample)
+
+   add_executable(TodoListAutomationExample examples/TodoList/automation/main.cpp)
+   target_link_libraries(TodoListAutomationExample PRIVATE TodoListMethodsExample)
+   add_system_includes_from_target(TodoListAutomationExample nlohmann_json::nlohmann_json)
+   enable_project_warnings(TodoListAutomationExample)
+   enable_project_sanitizers(TodoListAutomationExample)
+endif()
+
 if(METHOD_ENABLE_INSTALL)
    if(METHOD_USING_FETCHED_NLOHMANN_JSON)
       message(FATAL_ERROR "METHOD_ENABLE_INSTALL requires nlohmann_json to be available through find_package.")
@@ -200,6 +254,24 @@ if(METHOD_BUILD_TESTING)
    include(CTest)
 
    if(BUILD_TESTING)
+      if(METHOD_BUILD_EXAMPLES)
+         add_test(NAME CounterExample COMMAND CounterExample)
+         set_tests_properties(CounterExample PROPERTIES PASS_REGULAR_EXPRESSION "After reset: 0")
+
+         add_test(NAME TodoListCliExample COMMAND TodoListCliExample add "Write docs" add "Run tests" complete 1 list)
+         set_tests_properties(TodoListCliExample PROPERTIES PASS_REGULAR_EXPRESSION "Run tests")
+
+         add_test(
+            NAME TodoListAutomationExample
+            COMMAND
+               TodoListAutomationExample
+               [[
+[{"method":"todo.add","parameters":{"title":"Write docs"}},{"method":"todo.add","parameters":{"title":"Run tests"}},{"method":"todo.complete","parameters":{"id":1}},{"method":"todo.list","parameters":{}}]
+]]
+         )
+         set_tests_properties(TodoListAutomationExample PROPERTIES PASS_REGULAR_EXPRESSION "Run tests")
+      endif()
+
       find_package(Catch2 3 CONFIG QUIET)
       if(NOT Catch2_FOUND)
          fetchcontent_declare(
@@ -218,10 +290,23 @@ if(METHOD_BUILD_TESTING)
       enable_project_warnings(MethodTests)
       enable_project_sanitizers(MethodTests)
 
+      if(METHOD_BUILD_EXAMPLES)
+         add_executable(ExampleTests tests/ExampleTests.cpp)
+         target_link_libraries(ExampleTests PRIVATE CounterExampleLibrary TodoListMethodsExample Catch2::Catch2WithMain)
+         add_system_includes_from_target(ExampleTests nlohmann_json::nlohmann_json)
+         add_system_includes_from_target(ExampleTests Catch2::Catch2)
+         add_system_includes_from_target(ExampleTests Catch2::Catch2WithMain)
+         enable_project_warnings(ExampleTests)
+         enable_project_sanitizers(ExampleTests)
+      endif()
+
       if(DEFINED catch2_SOURCE_DIR)
          list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
       endif()
       include(Catch)
       catch_discover_tests(MethodTests)
+      if(METHOD_BUILD_EXAMPLES)
+         catch_discover_tests(ExampleTests)
+      endif()
    endif()
 endif()

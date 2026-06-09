@@ -86,7 +86,7 @@ Checks: >
   readability-use-anyofallof
 
 WarningsAsErrors: "*"
-HeaderFilterRegex: "^(?!.*[/\\\\]_deps[/\\\\]).*[/\\\\](include|src|tests)[/\\\\].*"
+HeaderFilterRegex: "^(?!.*[/\\\\]_deps[/\\\\]).*[/\\\\](examples|include|src|tests)[/\\\\].*"
 FormatStyle: file
 
 CheckOptions:

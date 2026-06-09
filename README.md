@@ -92,10 +92,33 @@ That list can then be consumed by application code, documentation generators, AI
 transport is deliberately outside this library; Method is the shared vocabulary for describing and invoking the
 operations.
 
+## Examples
+
+The repo builds examples by default when Method is the top-level CMake project. Consumers that bring Method in through
+`FetchContent` do not build examples unless they set `METHOD_BUILD_EXAMPLES=ON`.
+
+- `CounterExample` is a compact model-plus-methods sample. It shows a query, an undoable command, and a non-undoable
+  command against a tiny counter model.
+- `TodoListCliExample` and `TodoListAutomationExample` share the same TODO list Method Surface. The TODO example is
+  split into a core model library, a methods library, and two surfaces. The CLI and automation executables include only
+  the methods-layer public header, so the model remains behind the Method Surface.
+
+The automation example accepts either a single JSON request or an array of requests. Each request has a `method` field
+and optional `parameters` object:
+
+```json
+[
+   { "method": "todo.add", "parameters": { "title": "Write docs" } },
+   { "method": "todo.complete", "parameters": { "id": 1 } },
+   { "method": "todo.list", "parameters": {} }
+]
+```
+
 ## Project Layout
 
 - `include/Method/` contains public library `.h` headers.
 - `src/` contains `.cpp` implementation files.
+- `examples/` contains the Counter and TODO list examples.
 - `tests/` contains Catch2 unit tests.
 - `STYLE.md` documents the local C++ style rules used by this library.
 - `.sh` files in `scripts/` define build, linting, and testing commands that are shared between GitHub Actions, local
